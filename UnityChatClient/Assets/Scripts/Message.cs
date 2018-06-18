@@ -1,46 +1,56 @@
 ﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class Message
 {
-	public string userName;      
-	public bool mine;
-	public bool server;
+	public string userName;
+    public string message;
+    public Color color;
 
-	private string mRealMessage;
-    private string message;
-	private DateTime dateTime;
+    public bool isMine;
+    public bool isServer;
+    public DateTime dateTime;
 
-	public override string ToString()
-	{
-		var toReturn = "";
-		if(mRealMessage.Contains(Constants.ONLINE_CONNECTIONS))
-			toReturn = string.Format("People online: {0}", message);
-		else
-			toReturn = string.Format("[S:{0}, ME:{1}, {2}] {3}: {4}", server, mine, dateTime.ToString(), userName, message);
-		      
-		return toReturn;
-	}
+	public Message(string userName, string message, Color color, bool isMine = true, bool isServer = false, DateTime dateTime = default(DateTime))
+    {
+        this.userName = userName;
+        this.message = message;
+        this.color = color;         
+        this.isMine = isMine;
+        this.isServer = isServer;
+        this.dateTime = dateTime;
+    }
 
-	public Message(string messageFromServer)
-	{
-		mRealMessage = messageFromServer;
+    public string ToJson()
+    {
+		IDictionary<string, object> dictionary = new Dictionary<string, object>();
+		dictionary.Add("userName", userName);
+		dictionary.Add("message", message);
+		dictionary.Add("color", ColorToString(color));
+		dictionary.Add("isMine", isMine.ToString());
+		dictionary.Add("isServer", isServer.ToString());
+		dictionary.Add("dateTime", dateTime.ToString());
+		return MiniJSON.Json.Serialize(dictionary);
+    }
 
-		var splitted = messageFromServer.Split(Constants.MESSAGE_SEPARATOR);
-		server = bool.Parse(splitted[0]);
-		mine = bool.Parse(splitted[1]);
-		dateTime = DateTime.Parse(splitted[2]);
-
-		userName = splitted[3];
-		message = "";
-		for (int i = 4; i < splitted.Length; i++)
-			message += splitted[i];
-	}
+    public static Message FromJson(string json)
+    {
+		IDictionary<string, object> des = MiniJSON.Json.Deserialize(json) as Dictionary<string, object>;
+		var m = new Message(des["userName"].ToString(),
+		                          des["message"].ToString(),
+		                          ParseColor(des["color"].ToString()),
+								  bool.Parse(des["isMine"].ToString()),
+								  bool.Parse(des["isServer"].ToString()),
+		                          DateTime.Parse(des["dateTime"].ToString()));
+        return m;
+    }
 
     public string GetMessage()
 	{
 		var toReturn = "";
-		if (mRealMessage.Contains(Constants.ONLINE_CONNECTIONS))
-			toReturn = string.Format("People online: {0}", message);
+		if (message.Contains(Constants.ONLINE_CONNECTIONS))
+			toReturn = string.Format("People online: {0}", message.Replace(Constants.ONLINE_CONNECTIONS, ""));
 		else
 			toReturn = message;
 
@@ -51,4 +61,15 @@ public class Message
 	{
 		return dateTime.ToString("HH:mm:ss");
 	}
+
+    private static Color ParseColor(string color)
+	{
+		var rgba = color.Split(',');
+		return new Color(float.Parse(rgba[0]), float.Parse(rgba[1]), float.Parse(rgba[2]), float.Parse(rgba[3]));
+	}
+
+    private static string ColorToString(Color c)
+	{
+		return string.Format("{0},{1},{2},{3}", c.r, c.g, c.b, c.a);
+	}   
 }

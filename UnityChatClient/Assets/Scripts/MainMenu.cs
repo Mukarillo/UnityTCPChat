@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour {
 
 	public InputField userNameInputField;
+	public ColorSelector colorSelector;
 
 	public void Awake()
 	{
@@ -16,6 +17,6 @@ public class MainMenu : MonoBehaviour {
 		if (string.IsNullOrEmpty(userNameInputField.text)) return;
 
 		gameObject.SetActive(false);      
-		ChatClient.ME.Connect(userNameInputField.text);      
+		ChatClient.ME.Connect(userNameInputField.text, colorSelector.GetCurrentColor());      
 	}   
 }

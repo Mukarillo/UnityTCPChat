@@ -17,7 +17,7 @@ namespace chatserver
         {
             int count = 1;
 
-            TcpListener ServerSocket = new TcpListener(IPAddress.Any, 8888);
+			TcpListener ServerSocket = new TcpListener(IPAddress.Any, 16005);
             ServerSocket.Start();
 			Console.WriteLine("Server started");
 
@@ -36,7 +36,7 @@ namespace chatserver
         {
             int id = (int)o;
 			Client c;
-
+			string message;
             lock (_lock) c = list_clients[id];
 
 			while (true)
@@ -51,24 +51,29 @@ namespace chatserver
 				}
 
 				string data = Encoding.ASCII.GetString(buffer, 0, byte_count);
-				if (data.Contains(Constants.SET_USER_NAME))
+				var uMessage = Message.FromJson(data);
+				if (uMessage.message.Contains(Constants.SET_USER))
 				{
-					c.name = data.Split(Constants.MESSAGE_SEPARATOR)[1];
-					Console.WriteLine(c.name + " connected.");
+					c.userName = uMessage.userName;
+					c.color = uMessage.color;
+					Console.WriteLine(c.userName + " connected.");
 
-					var message = Constants.ONLINE_CONNECTIONS;
+					var text = Constants.ONLINE_CONNECTIONS;
 					foreach (var kvp in list_clients)
-						message += (kvp.Key == id ? "You" : kvp.Value.name) + ", ";
-					message = message.Remove(message.Length - 2);
-                    SendMessageToClient(c, message);
-					Console.WriteLine(message);
+						text += (kvp.Key == id ? "You" : kvp.Value.userName) + ", ";
+					text = text.Remove(text.Length - 2);
 
-					BroadcastExcept(Constants.MESSAGE_SEPARATOR + c.name + " connected.", id);
+					message = new Message(c.userName, text, Color.ServerColor, false, true, DateTime.Now).ToJson();
+                    
+					SendMessageToClient(c, message);
+
+					message = new Message(c.userName, c.userName + " connected.", Color.ServerColor, false, true, DateTime.Now).ToJson();
+					BroadcastExcept(message, id);
 				}
 			    else
 				{
-					Broadcast(data, id, false);
-					Console.WriteLine(data);
+					Broadcast(uMessage.message, id, false);
+					Console.WriteLine(string.Format("{0}({1}): {2}", uMessage.userName, id, uMessage.message));
 				}
             }
                      
@@ -76,14 +81,14 @@ namespace chatserver
 			c.client.Client.Shutdown(SocketShutdown.Send);
 			c.client.Close();
 
-			Console.WriteLine(c.name + " disconnected.");
-			Broadcast(Constants.MESSAGE_SEPARATOR + c.name + " disconnected.", -1, true);
+			Console.WriteLine(c.userName + " disconnected.");
+			Broadcast(c.userName + " disconnected.", Constants.SERVER_ID, true);
         }
 
 		public static void SendMessageToClient(Client client, string message)
 		{
-			NetworkStream stream = client.client.GetStream();         
-			var buffer = GetParsedMessage(message, false, true);
+			NetworkStream stream = client.client.GetStream();
+			var buffer = Encoding.ASCII.GetBytes(message);
 
 			stream.Write(buffer, 0, buffer.Length);
 		}
@@ -97,10 +102,8 @@ namespace chatserver
                 foreach (var c in list_clients)
                 {
 					if (c.Key == excluded) continue;
-                    NetworkStream stream = c.Value.client.GetStream();
-
-                    buffer = GetParsedMessage(data, false, true);
-
+                    NetworkStream stream = c.Value.client.GetStream();               
+					buffer = Encoding.ASCII.GetBytes(data);               
                     stream.Write(buffer, 0, buffer.Length);
                 }
             }
@@ -115,20 +118,14 @@ namespace chatserver
                 foreach (var c in list_clients)
                 {
 					NetworkStream stream = c.Value.client.GetStream();
-
-					buffer = GetParsedMessage(data, c.Key == senderId, isServer);
+					var name = senderId == Constants.SERVER_ID ? Constants.SERVER_NAME : list_clients[senderId].userName;
+					var color = senderId == Constants.SERVER_ID ? Color.ServerColor : list_clients[senderId].color;
+					var message = new Message(name, data, color, c.Key == senderId, isServer, DateTime.Now).ToJson();
+					buffer = Encoding.ASCII.GetBytes(message);
 
                     stream.Write(buffer, 0, buffer.Length);
                 }
             }
-        }
-
-        private static byte[] GetParsedMessage(string message, bool isSender, bool isServer)
-		{
-			return Encoding.ASCII.GetBytes(isServer.ToString() + Constants.MESSAGE_SEPARATOR +
-				                           isSender.ToString() + Constants.MESSAGE_SEPARATOR + 
-			                               DateTime.Now.ToString() + Constants.MESSAGE_SEPARATOR + 
-			                               message);
-		}      
+        }     
     }   
 }

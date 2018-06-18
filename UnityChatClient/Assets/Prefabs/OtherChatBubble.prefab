@@ -358,6 +358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ac2fd3da90f9481cb3ca1edfed1c367, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bubble: {fileID: 114391489992440478}
   message: {fileID: 114412214895789634}
   date: {fileID: 114789477519090312}
   userName: {fileID: 114657857981482208}

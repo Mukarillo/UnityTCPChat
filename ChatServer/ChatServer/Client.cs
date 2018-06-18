@@ -4,7 +4,8 @@ namespace chatserver
 {
     public class Client
     {
-		public string name;
+		public string userName;
+		public Color color;
 		public TcpClient client;
 
 		public Client(TcpClient client)

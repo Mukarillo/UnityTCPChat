@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 
 public class ChatBubble : MonoBehaviour {
+	public Image bubble;
 	public Text message;
 	public Text date;
 	public Text userName;
@@ -14,10 +15,11 @@ public class ChatBubble : MonoBehaviour {
     
     public void SetMessage(Message message)
 	{
+		this.bubble.color = message.color;
 		this.message.text = SpliceText(message.GetMessage(), mMaxCharacterInOneLine);      
 		date.text = message.GetDate();
   
-		if(!message.server)
+		if(!message.isServer)
 			userName.text = message.userName;
 	}
 

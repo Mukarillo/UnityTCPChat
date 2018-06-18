@@ -40,7 +40,7 @@ public class ChatController : MonoBehaviour {
 
 	public void DisplayNewMessage(Message message)
 	{
-		var bubble = GameObject.Instantiate(message.server ? serverBubble : message.mine ? myBubble : othersBubble, bubblesParent).GetComponent<ChatBubble>();
+		var bubble = GameObject.Instantiate(message.isServer ? serverBubble : message.isMine ? myBubble : othersBubble, bubblesParent).GetComponent<ChatBubble>();
 		bubble.SetMessage(message);
 
 		Canvas.ForceUpdateCanvases();
