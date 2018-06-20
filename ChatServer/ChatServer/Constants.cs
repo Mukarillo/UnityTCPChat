@@ -4,8 +4,6 @@
 	{
 		public const string SERVER_NAME = "SERVER";
 		public const int SERVER_ID = -1;
-        
-		public const char MESSAGE_SEPARATOR = '~';      
 
         //COMMANDS
         public const string ONLINE_CONNECTIONS = "[ONLINE_CONNECTIONS]";

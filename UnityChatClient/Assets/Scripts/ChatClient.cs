@@ -15,7 +15,7 @@ public class ChatClient : MonoBehaviour
 	private string mUserName;
 	private Color mUserColor = Color.black;
 	private TcpClient mClient = new TcpClient();
-	private Thread clientReceiveThread;
+	private Thread mClientReceiveThread;
 
 	public void Awake()
 	{
@@ -29,9 +29,9 @@ public class ChatClient : MonoBehaviour
 		mUserColor = color;
 
         try {           
-            clientReceiveThread = new Thread (new ThreadStart(ListenForData));          
-            clientReceiveThread.IsBackground = true;            
-            clientReceiveThread.Start();
+            mClientReceiveThread = new Thread (new ThreadStart(ListenForData));          
+            mClientReceiveThread.IsBackground = true;            
+            mClientReceiveThread.Start();
 			ChatController.ME.gameObject.SetActive(true);
         }       
         catch (Exception e) {           
@@ -49,10 +49,8 @@ public class ChatClient : MonoBehaviour
 
             Byte[] bytes = new Byte[1024];
             while (true) {
-                // Get a stream object for reading
 				using (NetworkStream stream = mClient.GetStream()) {
                     int length;
-                    // Read incomming stream into byte arrary.
                     while ((length = stream.Read(bytes, 0, bytes.Length)) != 0) {
                         var incommingData = new byte[length];
                         Array.Copy(bytes, 0, incommingData, 0, length);
@@ -84,17 +82,12 @@ public class ChatClient : MonoBehaviour
             Debug.Log("Socket exception: " + socketException);         
         }
     }
-   
-    private string GetFormatedMessage(string message)
-	{
-		return mUserName + Constants.MESSAGE_SEPARATOR + message;
-	}
 
 	private void OnDestroy()
 	{
 		if (mClient == null) return;
 		mClient.Client.Shutdown(SocketShutdown.Send);
-		clientReceiveThread.Join();
+		mClientReceiveThread.Join();
 		mClient.GetStream().Close();
 		mClient.Close();
 	}

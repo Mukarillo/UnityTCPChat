@@ -54,9 +54,7 @@ namespace chatserver
 				var uMessage = Message.FromJson(data);
 				if (uMessage.message.Contains(Constants.SET_USER))
 				{
-					c.userName = uMessage.userName;
-					c.color = uMessage.color;
-					Console.WriteLine(c.userName + " connected.");
+					c.SetClient(uMessage.userName, uMessage.color);               
 
 					var text = Constants.ONLINE_CONNECTIONS;
 					foreach (var kvp in list_clients)
@@ -64,11 +62,11 @@ namespace chatserver
 					text = text.Remove(text.Length - 2);
 
 					message = new Message(c.userName, text, Color.ServerColor, false, true, DateTime.Now).ToJson();
-                    
 					SendMessageToClient(c, message);
 
 					message = new Message(c.userName, c.userName + " connected.", Color.ServerColor, false, true, DateTime.Now).ToJson();
 					BroadcastExcept(message, id);
+					Console.WriteLine(c.userName + " connected.");
 				}
 			    else
 				{
@@ -80,9 +78,9 @@ namespace chatserver
             lock (_lock) list_clients.Remove(id);
 			c.client.Client.Shutdown(SocketShutdown.Send);
 			c.client.Close();
-
-			Console.WriteLine(c.userName + " disconnected.");
+                     
 			Broadcast(c.userName + " disconnected.", Constants.SERVER_ID, true);
+			Console.WriteLine(c.userName + " disconnected.");
         }
 
 		public static void SendMessageToClient(Client client, string message)

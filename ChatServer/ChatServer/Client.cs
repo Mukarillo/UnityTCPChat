@@ -12,5 +12,11 @@ namespace chatserver
         {
 			this.client = client;
         }
+
+        public void SetClient(string userName, Color color)
+		{
+			this.userName = userName;
+			this.color = color;
+		}
     }
 }
