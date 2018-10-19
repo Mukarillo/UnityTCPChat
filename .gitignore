@@ -25,6 +25,9 @@ ExportedObj/
 *.pdb
 *.opendb
 
+#not these files
+!ChatServer/ChatServer.sln
+
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
