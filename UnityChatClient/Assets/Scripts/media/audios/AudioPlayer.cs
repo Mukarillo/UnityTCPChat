@@ -7,14 +7,14 @@ public class AudioPlayer : MonoBehaviour
 	public static AudioPlayer ME;
 	public AudioSource audioSource;
 
-	private AudioPlayButton mCurrentButton;
+	private Sound mCurrentButton;
 
 	private void Awake()
 	{
 		ME = this;      
 	}
 
-	public void PlayAudio(AudioPlayButton button)
+	public void PlayAudio(Sound button)
 	{
 		if (button != mCurrentButton)
 			InternalPlayAudio(button);
@@ -22,15 +22,15 @@ public class AudioPlayer : MonoBehaviour
 			StopPlaying();
 	}
 
-	private void InternalPlayAudio(AudioPlayButton button)
+	private void InternalPlayAudio(Sound button)
 	{
 		mCurrentButton = button;
 
-		mCurrentButton.ChangeState(AudioPlayButton.AudioPlayButtonState.PLAYING);
-		audioSource.clip = mCurrentButton.audioClip;
+		mCurrentButton.ChangeState(MediaComponent.MediaButtonState.PLAYING);
+		audioSource.clip = mCurrentButton.file;
 		audioSource.Play();
 
-		StartCoroutine(WaitAudioFile(mCurrentButton.audioClip.length));
+		StartCoroutine(WaitAudioFile(mCurrentButton.file.length));
 	}
 
 	private IEnumerator WaitAudioFile(float length)
@@ -44,7 +44,7 @@ public class AudioPlayer : MonoBehaviour
 		StopAllCoroutines();
 
 		audioSource.Stop();
-		mCurrentButton.ChangeState(AudioPlayButton.AudioPlayButtonState.IDLE);
+		mCurrentButton.ChangeState(MediaComponent.MediaButtonState.IDLE);
 		mCurrentButton = null;
 	}
 

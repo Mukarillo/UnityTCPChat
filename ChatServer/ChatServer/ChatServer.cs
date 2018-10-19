@@ -52,6 +52,7 @@ namespace chatserver
 
 				string data = Encoding.ASCII.GetString(buffer, 0, byte_count);
 				var uMessage = Message.FromJson(data);
+			    uMessage.dateTime = DateTime.Now;
 				if (uMessage.message.Contains(Constants.SET_USER))
 				{
 					c.SetClient(uMessage.userName, uMessage.color);               

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class RetieveFromServer<T>
@@ -9,12 +10,14 @@ public class RetieveFromServer<T>
 	private OnFileSucceedRetrieving mOnFileSucceedRetrieving;
 	private OnFileFailedRetrieving mOnFileFailedRetrieving;
 
+    private Type mType => typeof(T);
+
 	public RetieveFromServer(MonoBehaviour monoref, string url, OnFileSucceedRetrieving onSucceedRetrieving, OnFileFailedRetrieving onFailedRetrieving)
     {
 		mOnFileSucceedRetrieving = onSucceedRetrieving;
 		mOnFileFailedRetrieving = onFailedRetrieving;
 
-		monoref.StartCoroutine(InternalRetieveFromServer(url));
+        monoref.StartCoroutine(InternalRetieveFromServer(url));
     }
 
 	private IEnumerator InternalRetieveFromServer(string url)
@@ -27,12 +30,19 @@ public class RetieveFromServer<T>
 			mOnFileFailedRetrieving(www.error);
 			yield break;
 		}
-
-		var tType = typeof(T);     
-		if(tType == typeof(AudioClip))
+ 
+		if(mType == typeof(AudioClip))
 		{
 			object clip = www.GetAudioClip();
 			mOnFileSucceedRetrieving((T)clip);
+		}else if (mType == typeof(Texture2D))
+		{
+		    object texture = www.texture;
+		    mOnFileSucceedRetrieving((T) texture);
+		}else if (mType == typeof(MovieTexture))
+		{
+		    object movie = www.GetMovieTexture();
+		    mOnFileSucceedRetrieving((T) movie);
 		}
 
 		www.Dispose();

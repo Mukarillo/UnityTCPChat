@@ -9,26 +9,48 @@ public class ChatBubble : MonoBehaviour {
 	public Text message;
 	public Text date;
 	public Text userName;
-	public AudioPlayButton audioPlayButton;
+	public Transform mediaParent;
+    public MediaComponent mediaComponent;
 
 	private int mMaxCharacterInOneLine = 20;
     
     public void SetMessage(Message message)
 	{
 		this.bubble.color = message.color;
+        
+        if (message.IsMediaMessage)
+		    SetMediaMessage(message);
+        else
+		    this.message.text = SpliceText(message.GetMessage(), mMaxCharacterInOneLine);
 
-		audioPlayButton?.gameObject?.SetActive(message.IsAudioMessage);
-
-		if (!message.IsAudioMessage)
-			this.message.text = SpliceText(message.GetMessage(), mMaxCharacterInOneLine);
-		else
-			audioPlayButton.Initiate(message.GetMessage(), this);
-
-		date.text = message.GetDate();
+        date.text = message.GetDate();
   
 		if(!message.isServer)
 			userName.text = message.userName;
 	}
+
+    private void SetMediaMessage(Message message)
+    {
+        if (message.IsStickerMessage)
+        {
+            mediaComponent = Instantiate(AssetController.GetGameObject("SimpleImage"), mediaParent).AddComponent<Sticker>();
+            ((Sticker)mediaComponent).ToggleClick(false);
+        }
+        else if (message.IsAudioMessage)
+        {
+            mediaComponent = Instantiate(AssetController.GetGameObject("SimpleImage"), mediaParent).AddComponent<Sound>();
+        }
+        else if (message.IsPhotoMessage)
+        {
+            mediaComponent = Instantiate(AssetController.GetGameObject("SimpleImage"), mediaParent).AddComponent<Photo>();
+        }
+        else if (message.IsVideoMessage)
+        {
+            mediaComponent = Instantiate(AssetController.GetGameObject("SimpleImage"), mediaParent).AddComponent<Video>();
+        }
+
+        mediaComponent.InitiateComponent(message.GetMessage(), this);
+    }
 
     public void ForceMessage(string message, Color textColor)
 	{

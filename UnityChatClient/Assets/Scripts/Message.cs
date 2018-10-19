@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Message
 {
-	public string userName;
+    public string userName;
     public string message;
     public Color color;
 
@@ -12,9 +12,13 @@ public class Message
     public bool isServer;
     public DateTime dateTime;
 
-	public bool IsAudioMessage => message.Contains(Constants.AUDIO_MESSAGE);
+    public bool IsAudioMessage => message.Contains(Constants.AUDIO_MESSAGE);
+    public bool IsStickerMessage => message.Contains(Constants.STICKER_MESSAGE);
+    public bool IsPhotoMessage => message.Contains(Constants.PHOTO_MESSAGE);
+    public bool IsVideoMessage => message.Contains(Constants.VIDEO_MESSAGE);
+    public bool IsMediaMessage => IsStickerMessage || IsAudioMessage || IsPhotoMessage || IsVideoMessage;
 
-	public Message(string userName, string message, Color color, bool isMine = true, bool isServer = false, DateTime dateTime = default(DateTime))
+public Message(string userName, string message, Color color, bool isMine = true, bool isServer = false, DateTime dateTime = default(DateTime))
     {
         this.userName = userName;
         this.message = message;
@@ -55,7 +59,13 @@ public class Message
 			toReturn = string.Format("People online: {0}", message.Replace(Constants.ONLINE_CONNECTIONS, ""));
 		else if(message.Contains(Constants.AUDIO_MESSAGE))
 			toReturn = message.Replace(Constants.AUDIO_MESSAGE, "");
-		else
+		else if (message.Contains(Constants.STICKER_MESSAGE))
+		    toReturn = message.Replace(Constants.STICKER_MESSAGE, "");
+		else if (message.Contains(Constants.PHOTO_MESSAGE))
+		    toReturn = message.Replace(Constants.PHOTO_MESSAGE, "");
+		else if (message.Contains(Constants.VIDEO_MESSAGE))
+		    toReturn = message.Replace(Constants.VIDEO_MESSAGE, "");
+        else
 			toReturn = message;
 
         return toReturn;

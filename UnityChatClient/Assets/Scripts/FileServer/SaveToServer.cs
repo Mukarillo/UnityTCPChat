@@ -21,7 +21,31 @@ public class SaveToServer
 			                   "audioupload.php"));
     }
 
-	private IEnumerator InternalSaveToServer(byte[] data, string fileName, string mimeType, string phpServerFile)
+    public SaveToServer(MonoBehaviour monoref, Texture2D texture, string fileName, OnFileSucceedUploading onSucceedUploading, OnFileFailedUploading onFailedUploading)
+    {
+        mOnFileSucceedUploading = onSucceedUploading;
+        mOnFileFailedUploading = onFailedUploading;
+        
+        monoref.StartCoroutine(InternalSaveToServer(
+            texture.EncodeToPNG(),
+            fileName + ".png",
+            "image/png",
+            "uploadimage.php"));
+    }
+
+    public SaveToServer(MonoBehaviour monoref, byte[] data, string fileName, OnFileSucceedUploading onSucceedUploading, OnFileFailedUploading onFailedUploading)
+    {
+        mOnFileSucceedUploading = onSucceedUploading;
+        mOnFileFailedUploading = onFailedUploading;
+
+        monoref.StartCoroutine(InternalSaveToServer(
+            data,
+            fileName + ".mp4",
+            "video/mp4",
+            "uploadvideo.php"));
+    }
+
+    private IEnumerator InternalSaveToServer(byte[] data, string fileName, string mimeType, string phpServerFile)
 	{
 		WWWForm form = new WWWForm();
 		form.AddBinaryData("file", data, fileName, mimeType);

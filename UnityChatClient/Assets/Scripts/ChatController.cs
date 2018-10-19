@@ -23,14 +23,18 @@ public class ChatController : MonoBehaviour {
 	private void OnEndEdit(string arg0)
 	{
 		SendMessage();
-		//messageInput.ActivateInputField();
 	}
+
+    public void ClearMessageInput()
+    {
+        messageInput.text = "";
+    }
 
 	public void SendMessage()
 	{
 		if (string.IsNullOrEmpty(messageInput.text)) return;
 		string message = messageInput.text;
-		messageInput.text = "";
+        ClearMessageInput();
 
 		ChatClient.ME.SendMessageToServer(message);      
 	}
