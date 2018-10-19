@@ -86,9 +86,10 @@ public class ChatClient : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		if (mClient == null) return;
+		if (mClient == null || !mClient.Client.Connected) return;
 		mClient.Client.Shutdown(SocketShutdown.Send);
 		mClientReceiveThread.Join();
+	    if (!mClient.Connected) return;
 		mClient.GetStream().Close();
 		mClient.Close();
 	}
