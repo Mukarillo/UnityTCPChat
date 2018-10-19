@@ -27,6 +27,7 @@ ExportedObj/
 
 #not these files
 !ChatServer/ChatServer.sln
+!ChatServer/ChatServer/ChatServer.csproj
 
 # Unity3D generated meta files
 *.pidb.meta
