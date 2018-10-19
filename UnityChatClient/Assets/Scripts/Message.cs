@@ -12,6 +12,8 @@ public class Message
     public bool isServer;
     public DateTime dateTime;
 
+	public bool IsAudioMessage => message.Contains(Constants.AUDIO_MESSAGE);
+
 	public Message(string userName, string message, Color color, bool isMine = true, bool isServer = false, DateTime dateTime = default(DateTime))
     {
         this.userName = userName;
@@ -51,6 +53,8 @@ public class Message
 		var toReturn = "";
 		if (message.Contains(Constants.ONLINE_CONNECTIONS))
 			toReturn = string.Format("People online: {0}", message.Replace(Constants.ONLINE_CONNECTIONS, ""));
+		else if(message.Contains(Constants.AUDIO_MESSAGE))
+			toReturn = message.Replace(Constants.AUDIO_MESSAGE, "");
 		else
 			toReturn = message;
 

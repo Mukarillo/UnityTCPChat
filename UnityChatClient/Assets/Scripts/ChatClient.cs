@@ -1,18 +1,19 @@
 ﻿using System.Threading;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using UnityEngine;
-using UnityEngine.UI;
-using System;  
-using System.IO;
+using System;
 using System.Net;
 using System.Text;
 
 public class ChatClient : MonoBehaviour
 {
 	public static ChatClient ME;
+ 
+	public Sprite loadingIcon;
+	public Sprite pauseAudioIcon;
+	public Sprite playAudioIcon;   
+	public string userName;
 
-	private string mUserName;
 	private Color mUserColor = Color.black;
 	private TcpClient mClient = new TcpClient();
 	private Thread mClientReceiveThread;
@@ -25,7 +26,7 @@ public class ChatClient : MonoBehaviour
 	}
 
 	public void Connect (string name, Color color) {
-		mUserName = name;
+		userName = name;
 		mUserColor = color;
 
         try {           
@@ -42,7 +43,7 @@ public class ChatClient : MonoBehaviour
 	private void ListenForData() {
         try {
 			mClient = new TcpClient();
-			mClient.Connect(IPAddress.Parse("127.0.0.1"), 16005);
+			mClient.Connect(IPAddress.Parse("192.168.0.6"), 16005);
 			Debug.Log("Connected");         
 
 			SendMessageToServer(Constants.SET_USER, true);
@@ -73,7 +74,7 @@ public class ChatClient : MonoBehaviour
         try {     
 			NetworkStream stream = mClient.GetStream();
             if (stream.CanWrite) {
-				Message message = new Message(mUserName, text, mUserColor);
+				Message message = new Message(userName, text, mUserColor);
 				byte[] clientMessageAsByteArray = Encoding.ASCII.GetBytes(message.ToJson());
                 stream.Write(clientMessageAsByteArray, 0, clientMessageAsByteArray.Length);
             }

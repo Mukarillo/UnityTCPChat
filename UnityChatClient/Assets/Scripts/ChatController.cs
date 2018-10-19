@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class ChatController : MonoBehaviour {
@@ -26,7 +23,7 @@ public class ChatController : MonoBehaviour {
 	private void OnEndEdit(string arg0)
 	{
 		SendMessage();
-		messageInput.ActivateInputField();
+		//messageInput.ActivateInputField();
 	}
 
 	public void SendMessage()
@@ -37,7 +34,7 @@ public class ChatController : MonoBehaviour {
 
 		ChatClient.ME.SendMessageToServer(message);      
 	}
-
+       
 	public void DisplayNewMessage(Message message)
 	{
 		var bubble = GameObject.Instantiate(message.isServer ? serverBubble : message.isMine ? myBubble : othersBubble, bubblesParent).GetComponent<ChatBubble>();

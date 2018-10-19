@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
@@ -10,17 +9,31 @@ public class ChatBubble : MonoBehaviour {
 	public Text message;
 	public Text date;
 	public Text userName;
+	public AudioPlayButton audioPlayButton;
 
 	private int mMaxCharacterInOneLine = 20;
     
     public void SetMessage(Message message)
 	{
 		this.bubble.color = message.color;
-		this.message.text = SpliceText(message.GetMessage(), mMaxCharacterInOneLine);      
+
+		audioPlayButton?.gameObject?.SetActive(message.IsAudioMessage);
+
+		if (!message.IsAudioMessage)
+			this.message.text = SpliceText(message.GetMessage(), mMaxCharacterInOneLine);
+		else
+			audioPlayButton.Initiate(message.GetMessage(), this);
+
 		date.text = message.GetDate();
   
 		if(!message.isServer)
 			userName.text = message.userName;
+	}
+
+    public void ForceMessage(string message, Color textColor)
+	{
+		this.message.text = message;
+		this.message.color = textColor;
 	}
 
 	private string SpliceText(string text, int lineLength)
