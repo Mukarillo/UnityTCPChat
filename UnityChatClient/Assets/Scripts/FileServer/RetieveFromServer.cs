@@ -39,13 +39,6 @@ public class RetieveFromServer<T>
 		{
 		    object texture = www.texture;
 		    mOnFileSucceedRetrieving((T) texture);
-		}else if (mType == typeof(MovieTexture))
-		{
-		    var movie = www.GetMovieTexture();
-			while (!movie.isReadyToPlay)
-				yield return null;
-			object omovie = movie;
-		    mOnFileSucceedRetrieving((T) omovie);
 		}
 
 		www.Dispose();

@@ -14,8 +14,10 @@ public class MediaButtons
 {
     public static List<IMediaButtonInfo> Buttons = new List<IMediaButtonInfo>
     {
+		new MediaButtonInfoInfo<DonationButton>(),
         new MediaButtonInfoInfo<StickersButton>(),
+		new MediaButtonInfoInfo<PhotoCameraButton>(),
         new MediaButtonInfoInfo<PhotoGalleryButton>(),
-        new MediaButtonInfoInfo<VideoGalleryButton>(),
+        //new MediaButtonInfoInfo<VideoGalleryButton>(),
     };
 }

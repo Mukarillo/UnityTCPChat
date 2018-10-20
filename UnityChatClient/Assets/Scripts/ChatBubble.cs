@@ -3,10 +3,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Linq;
+using TMPro;
 
 public class ChatBubble : MonoBehaviour {
 	public Image bubble;
-	public Text message;
+	public TextMeshProUGUI message;
 	public Text date;
 	public Text userName;
 	public Transform mediaParent;

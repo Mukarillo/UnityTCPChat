@@ -41,9 +41,18 @@ namespace chatserver
 
 			while (true)
 			{
-				NetworkStream stream = c.client.GetStream();
 				byte[] buffer = new byte[1024];
-				int byte_count = stream.Read(buffer, 0, buffer.Length);
+				int byte_count = 0;
+            
+				try
+				{
+					NetworkStream stream = c.client.GetStream();
+					byte_count = stream.Read(buffer, 0, buffer.Length);
+				}catch(Exception e)
+				{
+					Console.WriteLine(e);
+					continue;
+				}
 
 				if (byte_count == 0)
 				{

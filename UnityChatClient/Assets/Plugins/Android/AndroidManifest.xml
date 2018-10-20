@@ -14,6 +14,11 @@
     <meta-data android:name="unity.splash-mode" android:value="0" />
     <meta-data android:name="unity.splash-enable" android:value="True" />
     <meta-data android:name="android.max_aspect" android:value="2.1" />
+    <provider
+      android:name="com.yasirkula.unity.NativeCameraContentProvider"
+      android:authorities="muka_photo_access_auth"
+      android:exported="false"
+      android:grantUriPermissions="true" />
   </application>
   <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="26" />
   <uses-feature android:glEsVersion="0x00020000" />

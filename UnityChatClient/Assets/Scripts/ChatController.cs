@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ChatController : MonoBehaviour {
 	public static ChatController ME;
-
-	public InputField messageInput;
+    
+	public TMP_InputField messageInput;
 	public ScrollRect scrollRect;
 
 	public Transform bubblesParent;
@@ -41,7 +42,7 @@ public class ChatController : MonoBehaviour {
        
 	public void DisplayNewMessage(Message message)
 	{
-		var bubble = GameObject.Instantiate(message.isServer ? serverBubble : message.isMine ? myBubble : othersBubble, bubblesParent).GetComponent<ChatBubble>();
+		var bubble = Instantiate(message.isServer ? serverBubble : message.isMine ? myBubble : othersBubble, bubblesParent).GetComponent<ChatBubble>();
 		bubble.SetMessage(message);
 
 		Canvas.ForceUpdateCanvases();

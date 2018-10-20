@@ -9,7 +9,7 @@ public class AssetController : MonoBehaviour
 
     private void Awake()
     {
-        var sprites = Resources.LoadAll<Sprite>("Images/").ToList();
+        var sprites = Resources.LoadAll<Sprite>("MyImages/").ToList();
 
         foreach (Sprite sprite in sprites)
             icons.Add(sprite.name, sprite);

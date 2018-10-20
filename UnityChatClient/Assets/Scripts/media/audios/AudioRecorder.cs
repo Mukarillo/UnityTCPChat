@@ -11,7 +11,7 @@ public class AudioRecorder
 	public void StartRecording(UnityAction<AudioClip> completeCallback, int maxClipLenth = 99)
 	{
 		mOnCompleteCallback = completeCallback;
-		mRecordingClip = Microphone.Start("Built-in Microphone", true, maxClipLenth, mSampleRate);
+		mRecordingClip = Microphone.Start(null, true, maxClipLenth, mSampleRate);
 
 		System.Threading.Timer timer = null;
 		timer = new System.Threading.Timer((obj) =>
