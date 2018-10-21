@@ -74,14 +74,21 @@ namespace chatserver
 					message = new Message(c.userName, text, Color.ServerColor, false, true, DateTime.Now).ToJson();
 					SendMessageToClient(c, message);
 
-					message = new Message(c.userName, c.userName + " connected.", Color.ServerColor, false, true, DateTime.Now).ToJson();
+					message = new Message(c.userName, Constants.PLAYER_CONNECTED + c.userName, Color.ServerColor, false, true, DateTime.Now).ToJson();
 					BroadcastExcept(message, id);
-					Console.WriteLine(c.userName + " connected.");
+					Console.WriteLine(Constants.PLAYER_CONNECTED + c.userName);
 				}
 			    else
 				{
-					Broadcast(uMessage.message, id, false);
-					Console.WriteLine(string.Format("{0}({1}): {2}", uMessage.userName, id, uMessage.message));
+					if (uMessage.IsCommandMessage)
+					{
+						ExecuteCommandMessage(uMessage);                  
+					}
+					else
+					{
+						Broadcast(uMessage.message, id, false);
+						Console.WriteLine(string.Format("{0}({1}): {2}", uMessage.userName, id, uMessage.message));
+					}
 				}
             }
                      
@@ -89,9 +96,22 @@ namespace chatserver
 			c.client.Client.Shutdown(SocketShutdown.Send);
 			c.client.Close();
                      
-			Broadcast(c.userName + " disconnected.", Constants.SERVER_ID, true);
-			Console.WriteLine(c.userName + " disconnected.");
+			Broadcast(Constants.PLAYER_DISCONECTED + c.userName, Constants.SERVER_ID, true);
+			Console.WriteLine(Constants.PLAYER_DISCONECTED + c.userName);
         }
+
+		private static void ExecuteCommandMessage(Message uMessage)
+		{
+			string broadcastMessage = "";
+			if(uMessage.IsDonateMessage)
+			{
+				var messageContent = uMessage.message.Replace(Constants.DONATE_MESSAGE, "").Split(' ');
+				broadcastMessage = string.Format("{0}{1} {2} {3}", Constants.DONATE_MESSAGE, uMessage.userName, messageContent[1], messageContent[0]);
+			}
+
+			Broadcast(broadcastMessage, Constants.SERVER_ID, true);
+			Console.WriteLine(broadcastMessage);
+		}
 
 		public static void SendMessageToClient(Client client, string message)
 		{

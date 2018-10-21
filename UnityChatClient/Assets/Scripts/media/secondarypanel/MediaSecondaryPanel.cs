@@ -1,21 +1,19 @@
 ﻿using UnityEngine;
 
 public class MediaSecondaryPanel : MonoBehaviour
-{
-    public RectTransform content;
-
+{   
     private MediaSecondaryPanelComponent mCurrentComponent;
 
-    public void ShowPanel<T>() where T : MediaSecondaryPanelComponent
+    public void ShowPanel<T>(string prefabName) where T : MediaSecondaryPanelComponent
     {
         if (mCurrentComponent != null)
         {
             mCurrentComponent.Dispose();
-            Destroy(mCurrentComponent);
+			Destroy(mCurrentComponent.gameObject);
         }
         
-        mCurrentComponent = (MediaSecondaryPanelComponent)gameObject.AddComponent(typeof(T));
-        mCurrentComponent.Initiate(content);
+		mCurrentComponent = (MediaSecondaryPanelComponent)Instantiate(AssetController.GetGameObject(prefabName), transform).GetComponent(typeof(T));
+        mCurrentComponent.Initiate();
     }
 
     public void DisposeCurrentPanel()
@@ -24,7 +22,7 @@ public class MediaSecondaryPanel : MonoBehaviour
             return;
 
         mCurrentComponent.Dispose();
-        Destroy(mCurrentComponent);
+		Destroy(mCurrentComponent.gameObject);
         mCurrentComponent = null;
     }
 }

@@ -14,8 +14,7 @@ public class MediaController : MonoBehaviour
     public RectTransform media;
 
     public MediaSecondaryPanel secondaryPanel;
-
-    public GameObject mediaButtonPrefab;
+ 
     public RectTransform mediaButtonsParent;
 
     public Image backgroundImage;
@@ -27,7 +26,7 @@ public class MediaController : MonoBehaviour
         ME = this;
 
         foreach (var btInfo in MediaButtons.Buttons)
-            GameObject.Instantiate(mediaButtonPrefab, mediaButtonsParent).AddComponent(btInfo.type);
+			Instantiate(AssetController.GetGameObject("MediaButton"), mediaButtonsParent).AddComponent(btInfo.type);
 
         backgroundImage.color = new Color(backgroundImage.color.r, backgroundImage.color.g, backgroundImage.color.b, 0f);
     }
@@ -62,9 +61,9 @@ public class MediaController : MonoBehaviour
         });
     }
     
-    public void OpenSecondaryPanel<T>() where T : MediaSecondaryPanelComponent
+    public void OpenSecondaryPanel<T>(string prefabName) where T : MediaSecondaryPanelComponent
     {
-        secondaryPanel.ShowPanel<T>();
+		secondaryPanel.ShowPanel<T>(prefabName);
         mediaButtonsParent.DOAnchorPosX(-mediaButtonsParent.rect.width, TIME_TO_TWEEN);
         mShowingSecondaryPanel = true;
     }
@@ -101,20 +100,10 @@ public class MediaController : MonoBehaviour
 
     }
 
-    public void SendVideo(byte[] video)
-    {
-        new SaveToServer(this, video, "video_" + ChatClient.ME.userName + DateTime.Now.ToString("yyyyMMddHHmmss"), OnSucceedUploadingVideo, OnFailedUploadingVideo);
-    }
-
-    private void OnSucceedUploadingVideo(string fileName)
-    {
-        ChatClient.ME.SendMessageToServer(Constants.VIDEO_MESSAGE + FileServerInfo.VIDEO_FOLDER_URL + fileName);
-    }
-
-    private void OnFailedUploadingVideo(string error)
-    {
-        throw new NotImplementedException();
-    }
+	public void SendDonation(string username, int amount)
+	{
+		ChatClient.ME.SendMessageToServer(string.Format("{0}{1} {2}", Constants.DONATE_MESSAGE, username, amount));
+	}
     
     private void OnDestroy()
     {

@@ -13,16 +13,19 @@ public class ChatBubble : MonoBehaviour {
 	public Transform mediaParent;
     public MediaComponent mediaComponent;
 
-	private int mMaxCharacterInOneLine = 20;
+	private int mMaxCharacterInOneLineUsers = 20;
+	private int mMaxCharacterInOneLineServer = 40;
     
     public void SetMessage(Message message)
 	{
 		this.bubble.color = message.color;
-        
-        if (message.IsMediaMessage)
-		    SetMediaMessage(message);
+
+		if (message.IsMediaMessage)
+			SetMediaMessage(message);
+		else if (message.isServer)
+			SetServerMessage(message);
         else
-		    this.message.text = SpliceText(message.GetMessage(), mMaxCharacterInOneLine);
+		    this.message.text = SpliceText(message.GetMessageContent(), mMaxCharacterInOneLineUsers);
 
         date.text = message.GetDate();
   
@@ -45,13 +48,27 @@ public class ChatBubble : MonoBehaviour {
         {
             mediaComponent = Instantiate(AssetController.GetGameObject("SimpleImage"), mediaParent).AddComponent<Photo>();
         }
-        else if (message.IsVideoMessage)
-        {
-            mediaComponent = Instantiate(AssetController.GetGameObject("SimpleImage"), mediaParent).AddComponent<Video>();
-        }
 
-        mediaComponent.InitiateComponent(message.GetMessage(), this);
+        mediaComponent.InitiateComponent(message.GetMessageContent(), this);
     }
+
+	private void SetServerMessage(Message message)
+	{
+		var t = "";
+		if (message.message.Contains(Constants.PLAYER_DISCONECTED))
+			t = message.GetMessageContent() + " disconected.";
+        else if (message.message.Contains(Constants.PLAYER_CONNECTED))
+			t = message.GetMessageContent() + " connected.";
+        else if (message.message.Contains(Constants.ONLINE_CONNECTIONS))
+			t = "Users online: \n" + string.Join(", ", message.GetMessageContent().Split(','));
+		else if (message.message.Contains(Constants.DONATE_MESSAGE))
+		{
+			var contents = message.message.Replace(Constants.DONATE_MESSAGE, "").Split(' ');
+			t = string.Format("User <b>{0}</b> donated <b>{1}$</b> to user <b>{2}</b>", contents[0], contents[1], contents[2]);
+		}
+
+		this.message.text = SpliceText(t, mMaxCharacterInOneLineServer);
+	}
 
     public void ForceMessage(string message, Color textColor)
 	{
@@ -64,8 +81,8 @@ public class ChatBubble : MonoBehaviour {
 		string nText = string.Empty;;
 		string[] preProcess = text.Split(new string[] {" "}, StringSplitOptions.RemoveEmptyEntries);
 		for(int i = 0; i < preProcess.Length; i++){
-			if(preProcess[i].Length > mMaxCharacterInOneLine){
-				string[] nString = SplitInParts(preProcess[i], mMaxCharacterInOneLine).ToArray();
+			if(preProcess[i].Length > lineLength){
+				string[] nString = SplitInParts(preProcess[i], lineLength).ToArray();
 				for(int j = 0; j < nString.Length; j++){
 					nText += nString[j]+"\n";
 				}

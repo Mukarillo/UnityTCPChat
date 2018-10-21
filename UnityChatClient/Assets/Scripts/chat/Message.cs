@@ -15,8 +15,7 @@ public class Message
     public bool IsAudioMessage => message.Contains(Constants.AUDIO_MESSAGE);
     public bool IsStickerMessage => message.Contains(Constants.STICKER_MESSAGE);
     public bool IsPhotoMessage => message.Contains(Constants.PHOTO_MESSAGE);
-    public bool IsVideoMessage => message.Contains(Constants.VIDEO_MESSAGE);
-    public bool IsMediaMessage => IsStickerMessage || IsAudioMessage || IsPhotoMessage || IsVideoMessage;
+    public bool IsMediaMessage => IsStickerMessage || IsAudioMessage || IsPhotoMessage;
 
 public Message(string userName, string message, Color color, bool isMine = true, bool isServer = false, DateTime dateTime = default(DateTime))
     {
@@ -52,23 +51,15 @@ public Message(string userName, string message, Color color, bool isMine = true,
         return m;
     }
 
-    public string GetMessage()
-	{
-		var toReturn = "";
-		if (message.Contains(Constants.ONLINE_CONNECTIONS))
-			toReturn = string.Format("People online: {0}", message.Replace(Constants.ONLINE_CONNECTIONS, ""));
-		else if(message.Contains(Constants.AUDIO_MESSAGE))
-			toReturn = message.Replace(Constants.AUDIO_MESSAGE, "");
-		else if (message.Contains(Constants.STICKER_MESSAGE))
-		    toReturn = message.Replace(Constants.STICKER_MESSAGE, "");
-		else if (message.Contains(Constants.PHOTO_MESSAGE))
-		    toReturn = message.Replace(Constants.PHOTO_MESSAGE, "");
-		else if (message.Contains(Constants.VIDEO_MESSAGE))
-		    toReturn = message.Replace(Constants.VIDEO_MESSAGE, "");
-        else
-			toReturn = message;
+    public string GetMessageContent()
+	{      
+		foreach(var command in Constants.COMMANDS)
+		{
+			if(message.Contains(command))
+				return message.Replace(command, "");
+		}
 
-        return toReturn;
+		return message;
 	}
 
     public string GetDate()

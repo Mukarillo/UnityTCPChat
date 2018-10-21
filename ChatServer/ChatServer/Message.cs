@@ -12,6 +12,9 @@ namespace chatserver
 		public bool isMine;
 		public bool isServer;
 		public DateTime dateTime;
+
+		public bool IsDonateMessage => message.Contains(Constants.DONATE_MESSAGE);
+		public bool IsCommandMessage => IsDonateMessage;
       
 		public Message(string userName, string message, Color color, bool isMine, bool isServer, DateTime dateTime)
         {

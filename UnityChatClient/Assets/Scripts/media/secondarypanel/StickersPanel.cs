@@ -13,25 +13,20 @@ public class StickersPanel : MediaSecondaryPanelComponent
         "rukki_lol", "rukki_love", "rukki_mad", "rukki_missyou", "rukki_nap", "rukki_okay", "rukki_omg", "rukki_rest", "rukki_shy",
         "rukki_snuggle", "rukki_stalker", "rukki_thankyou", "rukki_thumbsup", "rukki_whoa", "rukki_xoxo", "rukki_yolo"
     };
-    private GridLayoutGroup mGrid;
+
+	public GridLayoutGroup grid;
+	public RectTransform stickersParent;
 
     private List<Sticker> mStickerList = new List<Sticker>();
 
-    public override void Initiate(RectTransform content)
-    {
-        mGrid = content.gameObject.AddComponent<GridLayoutGroup>();
-        mGrid.childAlignment = TextAnchor.MiddleCenter;
-        mGrid.spacing = Vector2.one * 5;
-        mGrid.padding = new RectOffset(0, 0, 10, 10);
-        mGrid.cellSize = new Vector2(130, 130);
-
+    public override void Initiate()
+    {      
         foreach (var sticker in STICKERS_NAMES)
-            mStickerList.Add(GameObject.Instantiate(AssetController.GetGameObject("SimpleImage"), content).AddComponent<Sticker>().SetupSticker(sticker, false));
+			mStickerList.Add(Instantiate(AssetController.GetGameObject("SimpleImage"), stickersParent).AddComponent<Sticker>().SetupSticker(sticker, false));
     }
 
     public override void Dispose()
     {
-        mStickerList.ForEach(x => Destroy(x.gameObject));
-        Destroy(mGrid);
+        
     }
 }
