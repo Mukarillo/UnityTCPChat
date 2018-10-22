@@ -11,24 +11,24 @@ public abstract class MediaComponent : Button
     }
 
     protected abstract Vector2 componentSize { get; }
-
+	protected ChatBubble mChatBubble;
     protected LayoutElement mLayoutElement;
-    protected Image mImage;
 
     protected override void Awake()
     {
         base.Awake();
         mLayoutElement = gameObject.GetComponent<LayoutElement>() ?? gameObject.AddComponent<LayoutElement>();
-        mImage = gameObject.GetComponent<Image>();
-        mImage.preserveAspect = true;
 
         ResizeComponent(componentSize);
         onClick.AddListener(OnClick);
     }
 
-    protected abstract void OnClick();
+    protected virtual void OnClick() { }
 
-    public abstract void InitiateComponent(string param, ChatBubble bubble);
+	public virtual void InitiateComponent(string param, ChatBubble bubble)
+    {
+        mChatBubble = bubble;
+    }
 
     protected virtual void ResizeComponent(Vector2 size)
     {

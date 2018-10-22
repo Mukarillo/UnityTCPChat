@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Sticker : MediaComponent
+public class Sticker : ImageMediaComponent
 {
     private string mStickerName;
     private List<Sprite> mSprites;
@@ -33,6 +33,7 @@ public class Sticker : MediaComponent
 
     public override void InitiateComponent(string param, ChatBubble bubble)
     {
+		base.InitiateComponent(param, bubble);
         SetupSticker(param);
     }
 

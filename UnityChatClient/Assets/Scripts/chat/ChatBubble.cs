@@ -48,6 +48,10 @@ public class ChatBubble : MonoBehaviour {
         {
             mediaComponent = Instantiate(AssetController.GetGameObject("SimpleImage"), mediaParent).AddComponent<Photo>();
         }
+		else if (message.IsVideoMessage)
+        {
+            mediaComponent = Instantiate(AssetController.GetGameObject("SimpleImage"), mediaParent).AddComponent<Video>();
+        }
 
         mediaComponent.InitiateComponent(message.GetMessageContent(), this);
     }
@@ -63,7 +67,7 @@ public class ChatBubble : MonoBehaviour {
 			t = "Users online: \n" + string.Join(", ", message.GetMessageContent().Split(','));
 		else if (message.message.Contains(Constants.DONATE_MESSAGE))
 		{
-			var contents = message.message.Replace(Constants.DONATE_MESSAGE, "").Split(' ');
+			var contents = message.message.Replace(Constants.DONATE_MESSAGE, "").Split(',');
 			t = string.Format("User <b>{0}</b> donated <b>{1}$</b> to user <b>{2}</b>", contents[0], contents[1], contents[2]);
 		}
 

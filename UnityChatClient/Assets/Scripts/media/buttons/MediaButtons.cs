@@ -18,6 +18,7 @@ public class MediaButtons
         new MediaButtonInfoInfo<StickersButton>(),
 		new MediaButtonInfoInfo<PhotoCameraButton>(),
         new MediaButtonInfoInfo<PhotoGalleryButton>(),
-        //new MediaButtonInfoInfo<VideoGalleryButton>(),
+		new MediaButtonInfoInfo<VideoCameraButton>(),
+        new MediaButtonInfoInfo<VideoGalleryButton>()      
     };
 }

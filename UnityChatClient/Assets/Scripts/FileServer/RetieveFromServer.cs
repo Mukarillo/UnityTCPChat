@@ -17,6 +17,13 @@ public class RetieveFromServer<T>
 		mOnFileSucceedRetrieving = onSucceedRetrieving;
 		mOnFileFailedRetrieving = onFailedRetrieving;
 
+		if(mType == typeof(string))
+		{
+			object ourl = url;
+			mOnFileSucceedRetrieving((T)ourl);
+			return;
+		}
+
         monoref.StartCoroutine(InternalRetieveFromServer(url));
     }
 

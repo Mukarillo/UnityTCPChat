@@ -52,7 +52,6 @@ public class DonatePanel : MediaSecondaryPanelComponent
 			return;
 		
 		MediaController.ME.SendDonation(mDonatingPlayer, mTotalAmount);
-		MediaController.ME.ForceCloseMedia();
 	}
 
     private void ChangeTotalAmount(int amount)

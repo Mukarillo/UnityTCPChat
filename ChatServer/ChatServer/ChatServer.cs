@@ -96,6 +96,7 @@ namespace chatserver
 			c.client.Client.Shutdown(SocketShutdown.Send);
 			c.client.Close();
                      
+
 			Broadcast(Constants.PLAYER_DISCONECTED + c.userName, Constants.SERVER_ID, true);
 			Console.WriteLine(Constants.PLAYER_DISCONECTED + c.userName);
         }
@@ -105,8 +106,8 @@ namespace chatserver
 			string broadcastMessage = "";
 			if(uMessage.IsDonateMessage)
 			{
-				var messageContent = uMessage.message.Replace(Constants.DONATE_MESSAGE, "").Split(' ');
-				broadcastMessage = string.Format("{0}{1} {2} {3}", Constants.DONATE_MESSAGE, uMessage.userName, messageContent[1], messageContent[0]);
+				var messageContent = uMessage.message.Replace(Constants.DONATE_MESSAGE, "").Split(',');
+				broadcastMessage = string.Format("{0}{1},{2},{3}", Constants.DONATE_MESSAGE, uMessage.userName, messageContent[1], messageContent[0]);
 			}
 
 			Broadcast(broadcastMessage, Constants.SERVER_ID, true);

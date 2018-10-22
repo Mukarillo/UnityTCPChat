@@ -2,17 +2,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class LoadableMediaComponent<T> : MediaComponent
+public abstract class LoadableMediaComponent<T> : ImageMediaComponent
 {
     protected virtual Sprite LoadingSprite => AssetController.GetSprite("Loading");
 
     public T file;
-    protected ChatBubble mChatBubble;
     protected bool mRotate;
-    
-    public override void InitiateComponent(string param, ChatBubble chatBubble)
+
+	public override void InitiateComponent(string param, ChatBubble chatBubble)
     {
-        mChatBubble = chatBubble;
+		base.InitiateComponent(param, chatBubble);
+        
         ChangeState(MediaButtonState.LOADING);
 
         mRotate = true;
@@ -40,10 +40,10 @@ public abstract class LoadableMediaComponent<T> : MediaComponent
     public virtual void ChangeState(MediaButtonState state)
     {
         if (state == MediaButtonState.LOADING)
-            ((Image) targetGraphic).sprite = LoadingSprite;
+			mImage.sprite = LoadingSprite;
         mRotate = state == MediaButtonState.LOADING;
 
-        targetGraphic.transform.rotation = Quaternion.identity;
+		mImage.transform.rotation = Quaternion.identity;
     }
 
     protected virtual void Update()
@@ -51,6 +51,6 @@ public abstract class LoadableMediaComponent<T> : MediaComponent
         if (!mRotate)
             return;
 
-        targetGraphic.transform.Rotate(Vector3.forward * Time.deltaTime * 100);
+		mImage.transform.Rotate(Vector3.forward * Time.deltaTime * 100);
     }
 }

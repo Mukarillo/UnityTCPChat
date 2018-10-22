@@ -15,7 +15,8 @@ public class Message
     public bool IsAudioMessage => message.Contains(Constants.AUDIO_MESSAGE);
     public bool IsStickerMessage => message.Contains(Constants.STICKER_MESSAGE);
     public bool IsPhotoMessage => message.Contains(Constants.PHOTO_MESSAGE);
-    public bool IsMediaMessage => IsStickerMessage || IsAudioMessage || IsPhotoMessage;
+	public bool IsVideoMessage => message.Contains(Constants.VIDEO_MESSAGE);
+	public bool IsMediaMessage => IsStickerMessage || IsAudioMessage || IsPhotoMessage || IsVideoMessage;
 
 public Message(string userName, string message, Color color, bool isMine = true, bool isServer = false, DateTime dateTime = default(DateTime))
     {
