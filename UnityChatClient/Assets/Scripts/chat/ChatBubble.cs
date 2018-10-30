@@ -15,8 +15,36 @@ public class ChatBubble : MonoBehaviour {
 
 	private int mMaxCharacterInOneLineUsers = 20;
 	private int mMaxCharacterInOneLineServer = 40;
-    
-    public void SetMessage(Message message)
+	private float mBaseMessageFontSize;
+	private float mBaseNameFontSize;
+	private float mBaseDateFontSize;
+
+	private bool mIsServerMessage;
+
+	private VerticalLayoutGroup mDateLayoutLayoutGroup;
+	private RectOffset mDateLayoutElementPadding;
+
+	private VerticalLayoutGroup mNameLayoutLayoutGroup;
+	private RectOffset mNameLayoutElementPadding;
+
+	private void Awake()
+	{
+		mBaseMessageFontSize = message.fontSize;      
+		mBaseDateFontSize = date.fontSize;
+      
+		mDateLayoutLayoutGroup = date.GetComponent<VerticalLayoutGroup>();
+		mDateLayoutElementPadding = mDateLayoutLayoutGroup.padding;      
+
+		if (userName != null)
+        {
+            mBaseNameFontSize = userName.fontSize;
+
+            mNameLayoutLayoutGroup = userName.GetComponent<VerticalLayoutGroup>();
+            mNameLayoutElementPadding = mDateLayoutLayoutGroup.padding;
+        }
+	}
+
+	public void SetMessage(Message message, float scaler)
 	{
 		this.bubble.color = message.color;
 
@@ -31,6 +59,38 @@ public class ChatBubble : MonoBehaviour {
   
 		if(!message.isServer)
 			userName.text = message.userName;
+
+		SetScaler(scaler);
+	}
+
+	public void SetScaler(float scaler)
+	{
+		mediaComponent?.SetScaler(scaler);
+
+		message.fontSize = Math.Max(mBaseMessageFontSize * scaler, 14);
+		date.fontSize = Math.Max((int)(mBaseDateFontSize * scaler), 7);
+              
+		mDateLayoutLayoutGroup.padding = MultiplyRectOffset(mDateLayoutElementPadding, scaler);
+
+		if (userName != null)
+        {
+            userName.fontSize = Math.Max((int)(mBaseNameFontSize * scaler), 10);
+            mNameLayoutLayoutGroup.padding = MultiplyRectOffset(mNameLayoutElementPadding, scaler);
+        }
+	}
+
+	private RectOffset MultiplyRectOffset(RectOffset rect, float multiplier)
+	{
+		return new RectOffset(
+			(int)(rect.left * multiplier),
+			(int)(rect.right * multiplier),
+			(int)(rect.top * multiplier),
+			(int)(rect.bottom * multiplier));
+	}
+
+    public void SetTextMaxLength(int max)
+	{
+		
 	}
 
     private void SetMediaMessage(Message message)
@@ -58,6 +118,8 @@ public class ChatBubble : MonoBehaviour {
 
 	private void SetServerMessage(Message message)
 	{
+		mIsServerMessage = true;
+
 		var t = "";
 		if (message.message.Contains(Constants.PLAYER_DISCONECTED))
 			t = message.GetMessageContent() + " disconected.";

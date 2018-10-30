@@ -12,5 +12,6 @@ public class Photo : LoadableMediaComponent<Texture2D>
         base.OnSucceedRetrieving(file);
               
 		mImage.sprite = Sprite.Create(file, new Rect(0, 0, file.width, file.height), Vector2.zero);
+
     }
 }

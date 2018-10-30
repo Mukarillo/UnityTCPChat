@@ -10,16 +10,19 @@ public abstract class MediaComponent : Button
         LOADING
     }
 
-    protected abstract Vector2 componentSize { get; }
+    protected abstract Vector2 componentSize { get; }   
 	protected ChatBubble mChatBubble;
     protected LayoutElement mLayoutElement;
+
+	protected float mScaler = 1f;
+	protected Vector2 mComponentSize => componentSize * mScaler;
 
     protected override void Awake()
     {
         base.Awake();
         mLayoutElement = gameObject.GetComponent<LayoutElement>() ?? gameObject.AddComponent<LayoutElement>();
 
-        ResizeComponent(componentSize);
+		ResizeComponent(mComponentSize);
         onClick.AddListener(OnClick);
     }
 
@@ -29,6 +32,12 @@ public abstract class MediaComponent : Button
     {
         mChatBubble = bubble;
     }
+
+	public virtual void SetScaler(float scaler)
+	{
+		mScaler = scaler;
+		ResizeComponent(mComponentSize);
+	}
 
     protected virtual void ResizeComponent(Vector2 size)
     {
