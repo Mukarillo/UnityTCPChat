@@ -9,15 +9,22 @@ public class ChatController : MonoBehaviour {
     
 	public TMP_InputField messageInput;
 	public ScrollRect scrollRect;
-    
+
+	public GameObject microphonButton;
+	public GameObject MediaButton;
+
 	public Transform bubblesParent;
     
 	public PlayerStatus onPlayerConnected = new PlayerStatus();
 	public PlayerStatus onPlayerDisconected = new PlayerStatus();
 	public PlayersOnline onPlayerOnlineChanged = new PlayersOnline();
+
+	public float scaler = 1f;
     
 	private List<string> mUsersOnline = new List<string>();
 	public List<string> playersOnline => mUsersOnline;
+
+	private List<ChatBubble> mBubbles = new List<ChatBubble>();
 
 	public void Awake()
 	{
@@ -52,12 +59,20 @@ public class ChatController : MonoBehaviour {
 			UpdateUsers(message);
 
 		var bubble = Instantiate(AssetController.GetGameObject(message.isServer ? "ServerChatBubble" : message.isMine ? "UserChatBubble" : "OtherChatBubble"), bubblesParent).GetComponent<ChatBubble>();
-		bubble.SetMessage(message);
+		bubble.SetMessage(message, scaler);
+
+		mBubbles.Add(bubble);
 
 		Canvas.ForceUpdateCanvases();
 		scrollRect.verticalNormalizedPosition = 0f;
 		Canvas.ForceUpdateCanvases();
-	}   
+	}  
+
+    public void SetBubbleScaler(float scaler)
+	{
+		this.scaler = scaler;
+		mBubbles.ForEach(x => x.SetScaler(scaler));
+	}
 
 	private void UpdateUsers(Message message)
 	{

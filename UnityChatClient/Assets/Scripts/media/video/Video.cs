@@ -33,7 +33,7 @@ public class Video : PlayableMediaComponent<string>
 
 	private void SetVideoThumbnail(Texture2D thumbnail)
 	{
-		TextureScale.Bilinear(thumbnail, (int)componentSize.x, (int)componentSize.y);
+		TextureScale.Bilinear(thumbnail, (int)mComponentSize.x, (int)mComponentSize.y);
         
 		mVideoThumbnail.sprite = Sprite.Create(thumbnail, new Rect(0, 0, thumbnail.width, thumbnail.height), Vector2.zero);
 	}

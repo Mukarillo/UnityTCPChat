@@ -4,7 +4,13 @@ public class MediaSecondaryPanel : MonoBehaviour
 {   
     private MediaSecondaryPanelComponent mCurrentComponent;
 
-    public void ShowPanel<T>(string prefabName) where T : MediaSecondaryPanelComponent
+	private void Awake()
+	{
+		var rt = GetComponent<RectTransform>();
+		rt.anchoredPosition = new Vector2(rt.anchoredPosition.x + rt.rect.width, rt.anchoredPosition.y);
+	}
+
+	public void ShowPanel<T>(string prefabName) where T : MediaSecondaryPanelComponent
     {
         if (mCurrentComponent != null)
         {

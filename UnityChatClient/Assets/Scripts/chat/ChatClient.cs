@@ -8,7 +8,10 @@ using System.Text;
 public class ChatClient : MonoBehaviour
 {
 	public static ChatClient ME;
-   
+
+	public string IpToConnect;
+
+	[HideInInspector]
 	public string userName;
 
 	private Color mUserColor = Color.black;
@@ -38,9 +41,14 @@ public class ChatClient : MonoBehaviour
     }   
 
 	private void ListenForData() {
+		if(string.IsNullOrEmpty(IpToConnect))
+		{
+			Debug.LogError("Ip to connect null or empty.");
+			return;
+		}
         try {
 			mClient = new TcpClient();
-			mClient.Connect(IPAddress.Parse("192.168.0.6"), 16005);
+			mClient.Connect(IPAddress.Parse(IpToConnect), 16005);
 			Debug.Log("Connected");         
 
 			SendMessageToServer(Constants.SET_USER, true);
